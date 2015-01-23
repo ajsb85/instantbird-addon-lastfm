@@ -8,7 +8,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <!-- Extension Information //-->
-    <em:id><!-- Codename -->@alexandersalas.name</em:id>
+    <em:id>lastfm@alexandersalas.name</em:id>
     <em:unpack>true</em:unpack>
     <em:version>1.0</em:version>
     <em:type>2</em:type> <!-- Extension //-->
@@ -16,8 +16,8 @@
     <em:bootstrap>true</em:bootstrap>
 
     <!-- Front End MetaData //-->
-    <em:name><!-- Name --></em:name>
-    <em:description><!-- Description --></em:description>
+    <em:name>Last.fm</em:name>
+    <em:description>Show what I’m listening from Last.fm</em:description>
     <em:creator>Alexander Salas</em:creator>
 		<em:translator>Fatma Youssef</em:translator>
 
