@@ -19,8 +19,10 @@
     <em:name>Last.fm</em:name>
     <em:description>Show what I’m listening from Last.fm</em:description>
     <em:creator>Alexander Salas</em:creator>
-		<em:translator>Fatma Youssef</em:translator>
-
+		<em:translator>Fatma Youssef</em:translator>		<em:translator>Fatma Youssef</em:translator>
+		<em:homepageURL>http://alexandersalas.name/</em:homepageURL>
+		<em:icon64URL>chrome://lastfm/skin/icon64.png</em:icon64URL>
+    
     <!-- Target Applications //-->
     <em:targetApplication>
       <Description>

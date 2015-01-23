@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
+<!DOCTYPE mydialog SYSTEM "chrome://lastfm/locale/options.dtd">
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <setting type="bool" pref="extensions.lastfm.enable" title="Enable" desc="Show current music track"/>
-  <setting type="string" pref="extensions.lastfm.username" title="Last.fm UserName"/>
+  <setting type="bool" pref="extensions.lastfm.enable" title="Enable" desc="&lastfm.description;"/>
+  <setting type="string" pref="extensions.lastfm.username" title="&lastfm.username;"/>
 </vbox>
