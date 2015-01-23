@@ -2,7 +2,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this file,
 * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+let debug = true;
+const MY_STATUS_PREF_BRANCH = "extensions.mystatus.";
+const LAST_FM_PREF_BRANCH = "extensions.lastfm.";
+
 let {interfaces: Ci, utils: Cu, classes: Cc} = Components;
+
 Cu.import("resource:///modules/imServices.jsm");
 Cu.import("resource://gre/modules/Http.jsm");
 
@@ -10,89 +15,116 @@ let timer = Cc["@mozilla.org/timer;1"]
                      .createInstance(Ci.nsITimer);
 let mObserver = {
   observe: function(subject, topic, data) {
-    if(lastfm.enable()){
+    if ( lastfm.enable ) {
       lastfm.now();
     }else{
       timer.cancel();
+      myStatus.load();
     }
   }
 }
 
+let myStatus = {
+  LOG: function(aMsg){
+    if(debug)
+      Services.console.logStringMessage(aMsg);
+  },  
+  ERROR: function(aMsg){
+    Cu.reportError(aMsg)
+  },
+  _prefs: Services.prefs.getBranch(MY_STATUS_PREF_BRANCH),
+  _currentType: 0,
+  _currentStatus: "",
+  loaded: false,
+  statusMessageChange: function ms_statusMessageChange() {
+    let newStatus = Services.core.globalUserStatus.statusText;
+    let newType = Services.core.globalUserStatus.statusType;
+    this.updateSavedStatus( newType, newStatus );
+  },
+  updateSavedStatus: function ms_updateSavedStatus( newType, newStatus ) {
+    if(newStatus.indexOf("\u266b") > -1)
+      return;
+    if ( this._currentStatus != newStatus || this._currentType != newType ) {
+      this._prefs.setIntPref( "type", newType );
+      this._prefs.setCharPref( "value", newStatus );
+      this._currentType = newType;
+      this._currentStatus = newStatus;
+    }
+  },
+  observe: function(aSubject, aTopic, aMsg) {
+    if ( aTopic == "status-changed" /* #1 < */ || aTopic == "account-connected" /* > */ )
+	  this.statusMessageChange();
+  },
+  load: function() {
+    this._loaded = true;
+    this._currentType = this._prefs.prefHasUserValue("type") ? 
+                        this._prefs.getIntPref( "type" ) : 0;
+    this._currentStatus = this._prefs.prefHasUserValue( "value" ) ?
+                          this._prefs.getCharPref( "value" ) : "";
+    if ( this._currentType < 0 || this._currentType > 7 ) {
+      this._currentType = 0;
+      this._currentStatus = "";
+    }
+    Services.core.globalUserStatus.setStatus( this._currentType, this._currentStatus );
+    Services.obs.addObserver(myStatus, "status-changed", false);
+    Services.obs.addObserver(myStatus, "account-connected", false);   // possible fix ref. #1
+	}
+};
+
+
 let lastfm = {
-  enable: function(){
-    let prefs = Services.prefs.getBranch("extensions.lastfm.")
-    if(prefs.prefHasUserValue("enable"))
-      return prefs.getBoolPref("enable")
+  LOG: function(aMsg){
+    if(debug)
+      Services.console.logStringMessage(aMsg);
+  },  
+  ERROR: function(aMsg){
+    Cu.reportError(aMsg)
+  },
+  _prefs: Services.prefs.getBranch(LAST_FM_PREF_BRANCH),
+  get userName () {
+    if ( this._prefs.prefHasUserValue("username") )
+      if ( this._prefs.getCharPref("username") != "")
+        return this._prefs.getCharPref("username")
+    return null;
+  },
+  get enable () {
+    if ( this.userName == null ){
+      this.ERROR("Need a username to enable.")
+      this._prefs.setBoolPref("enable", false)
+    } 
+    else 
+      if ( this._prefs.prefHasUserValue("enable") )
+        return this._prefs.getBoolPref("enable")
     return false;
-    },
-  userName: function(){
-    let prefs = Services.prefs.getBranch("extensions.lastfm.")
-    if(prefs.prefHasUserValue("enable"))
-      return prefs.getBoolPref("enable")
-    return false;
-    },
-  now: function(){
+  },
+  now: function() {
     let statusValue = Ci.imIStatusInfo["STATUS_AVAILABLE"];
     let options = {
       postData: null,
       onLoad: null,
       onError: null,
-      logger: {log: dump.bind(this),
-               debug: dump.bind(this)}
+      logger: {log: this.LOG.bind(this),
+               debug: this.LOG.bind(this)}
     }
-    let url = "http://ajax.last.fm/user/ajsb85/now"
+    let url = "http://ajax.last.fm/user/"+ this.userName +"/now"
     timer.initWithCallback((function () {
       try {
-
-        
-        // dump(Services.core.globalUserStatus.statusText+"\n");
-        // dump(Services.core.globalUserStatus.statusType+"\n");
-  /*
-  {
-    "_meta": {
-      "url": "\/user\/ajsb85\/now",
-      "subject": {
-        "_type": "user",
-        "name": "ajsb85",
-        "url": "\/user\/ajsb85",
-        "is_music": false
-      }
-    },
-    "justlistened": true,
-    "utc": 1422024998,
-    "track": {
-      "_type": "track",
-      "name": "KOAN Sound & Asa - Tetsuo's Redemption",
-      "url": "\/music\/KOAN+Sound\/_\/KOAN+Sound+&+Asa+-+Tetsuo%27s+Redemption",
-      "is_music": true,
-      "artist": {
-        "_type": "artist",
-        "name": "KOAN Sound",
-        "url": "\/music\/KOAN+Sound",
-        "is_music": true
-      },
-      "images": {
-        "page": {
-          "url": "http:\/\/userserve-ak.last.fm\/serve\/500\/74874752\/KOAN+Sound+KOANSOUND_HIGH_MARIANNEHARRIS_.jpg"
-        },
-        "mega": {
-          "url": "http:\/\/userserve-ak.last.fm\/serve\/252\/74874752.jpg"
-        }
-      }
-    }
-  }
-
-  */
         let ajax = httpRequest(url, options);
+        let artist = "";
         ajax.onload = function (aRequest) {
           let data = JSON.parse(aRequest.target.responseText);
-          Services.core.globalUserStatus.setStatus(
-                Services.core.globalUserStatus.statusType, 
-                "\u266b " + data.track.name + " \u266a");
+          if ( data.nowplaying && data.track.is_music ) {
+            if ( typeof data.track.artist !== 'undefined' )
+              artist = " - " + data.track.artist.name;
+            Services.core.globalUserStatus.setStatus(
+                  Services.core.globalUserStatus.statusType, 
+                  "\u266b " + data.track.name + artist + " \u266a");
+          } else
+            myStatus.load();
         }
       } catch (e) {
-        dump(e);
         timer.cancel();
+        this.ERROR(e);
       }
     }).bind(this), 2000, timer.TYPE_REPEATING_SLACK);
   }
@@ -100,18 +132,24 @@ let lastfm = {
 
 function startup(aData, aReason) {
   Services.obs.addObserver(mObserver, "addon-options-hidden", false);
-  if(lastfm.enable()){
+  //myStatus.load();
+  if ( lastfm.enable ){
     lastfm.now();
   }
 }
 
 function shutdown(aData, aReason) {
   Services.obs.removeObserver(mObserver, "addon-options-hidden", false);
+  if(myStatus.loaded){
+    Services.obs.removeObserver(myStatus, "status-changed", false);
+    Services.obs.removeObserver(myStatus, "account-connected", false);
+  }
   timer.cancel();
   delete timer;
   delete mObserver;
   delete lastfm;
-  dump("ready");
+  delete myStatus;
+  delete debug;
 }
 
 function install(aData, aReason) {
@@ -119,8 +157,14 @@ function install(aData, aReason) {
 
 function uninstall(aData, aReason) {
   Services.obs.removeObserver(mObserver, "addon-options-hidden", false);
+  if(myStatus.loaded){
+    Services.obs.removeObserver(myStatus, "status-changed", false);
+    Services.obs.removeObserver(myStatus, "account-connected", false);
+  }
   timer.cancel();
   delete timer;
   delete mObserver;
   delete lastfm;
+  delete myStatus;
+  delete debug;
 }
