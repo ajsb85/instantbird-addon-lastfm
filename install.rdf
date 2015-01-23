@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this file,
+   - You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <!-- Extension Information //-->
+    <em:id><!-- Codename -->@alexandersalas.name</em:id>
+    <em:unpack>true</em:unpack>
+    <em:version>1.0</em:version>
+    <em:type>2</em:type> <!-- Extension //-->
+
+    <em:bootstrap>true</em:bootstrap>
+
+    <!-- Front End MetaData //-->
+    <em:name><!-- Name --></em:name>
+    <em:description><!-- Description --></em:description>
+    <em:creator>Alexander Salas</em:creator>
+		<em:translator>Fatma Youssef</em:translator>
+
+    <!-- Target Applications //-->
+    <em:targetApplication>
+      <Description>
+        <!-- Instantbird //-->
+        <em:id>{33cb9019-c295-46dd-be21-8c4936574bee}</em:id>
+        <em:minVersion>1.4</em:minVersion>
+        <em:maxVersion>1.6a1pre</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>
