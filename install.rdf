@@ -10,10 +10,12 @@
     <!-- Extension Information //-->
     <em:id>lastfm@alexandersalas.name</em:id>
     <em:unpack>true</em:unpack>
-    <em:version>1.0</em:version>
+    <em:version>1.0.1</em:version>
     <em:type>2</em:type> <!-- Extension //-->
 
     <em:bootstrap>true</em:bootstrap>
+    <em:multiprocessCompatible>true</em:multiprocessCompatible>
+    <em:strictCompatibility>false</em:strictCompatibility>
 
     <!-- Front End MetaData //-->
     <em:name>Last.fm Now Playing</em:name>
@@ -21,7 +23,7 @@
     <em:creator>Alexander Salas</em:creator>
 		<em:translator>Fatma Youssef</em:translator>
 		<em:homepageURL>http://alexandersalas.name/</em:homepageURL>
-		<em:icon64URL>chrome://lastfm/skin/icon64.png</em:icon64URL>
+		<!-- <em:icon64URL>chrome://lastfm/skin/icon64.png</em:icon64URL> -->
     
     <!-- Target Applications //-->
     <em:targetApplication>
