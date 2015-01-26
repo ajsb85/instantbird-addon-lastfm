@@ -10,8 +10,8 @@ Your status will automatically update each time starts a new song with the scrob
 If you stop your music, your status will display the default Available or Busy message.
 
 ###Download
-https://addons.instantbird.org/en-US/instantbird/addon/373 <br/>
-https://addons.mozilla.org/en-US/thunderbird/addon/lastfm-now-playing/
+https://addons.instantbird.org/instantbird/addon/373 <br/>
+https://addons.mozilla.org/thunderbird/addon/lastfm-now-playing/
 
 ###Works with
 
@@ -62,18 +62,18 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 ###Privacy Policy 
-CBS Interactive © Last.fm Ltd.
-More information here:
+CBS Interactive © Last.fm Ltd. <br/>
+More information here: <br/>
 http://www.last.fm/legal/privacy
 
 ###Terms of Use
-CBS Interactive © Last.fm Ltd.
-More information here:
+CBS Interactive © Last.fm Ltd. <br/>
+More information here: <br/>
 http://www.last.fm/legal/terms
 
 ###Legal Policies
-CBS Interactive © Last.fm Ltd.
-More information here:
+CBS Interactive © Last.fm Ltd. <br/>
+More information here: <br/>
 http://www.last.fm/legal
 
 ###Donate Bitcoin:
