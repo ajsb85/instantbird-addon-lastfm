@@ -67,7 +67,9 @@ let myStatus = {
       this._currentType = 0;
       this._currentStatus = "";
     }
-    Services.core.globalUserStatus.setStatus(this._currentType, this._currentStatus);
+    try {
+      Services.core.globalUserStatus.setStatus(this._currentType, this._currentStatus);
+    } catch (e) {}
     Services.obs.addObserver(myStatus, "status-changed", false);
     Services.obs.addObserver(myStatus, "account-connected", false);   // possible fix ref. #1
 	},
@@ -150,14 +152,18 @@ function startup(aData, aReason) {
 }
 
 function shutdown(aData, aReason) {
-  Services.obs.removeObserver(mObserver, "addon-options-hidden");
-  if (myStatus.loaded) {
-    myStatus.lock = true;
-    myStatus.restore();
-    Services.obs.removeObserver(myStatus, "status-changed");
-    Services.obs.removeObserver(myStatus, "account-connected");
+  try {
+    Services.obs.removeObserver(mObserver, "addon-options-hidden");
+    if (myStatus.loaded) {
+      myStatus.lock = true;
+      myStatus.restore();
+      Services.obs.removeObserver(myStatus, "status-changed");
+      Services.obs.removeObserver(myStatus, "account-connected");
+    }
+    timer.cancel();
+  } catch (e){
+    
   }
-  timer.cancel();
 }
 
 function install(aData, aReason) {
