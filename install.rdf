@@ -16,10 +16,10 @@
     <em:bootstrap>true</em:bootstrap>
 
     <!-- Front End MetaData //-->
-    <em:name>Last.fm</em:name>
+    <em:name>Last.fm Now Playing</em:name>
     <em:description>Show what I’m listening from Last.fm</em:description>
     <em:creator>Alexander Salas</em:creator>
-		<em:translator>Fatma Youssef</em:translator>		<em:translator>Fatma Youssef</em:translator>
+		<em:translator>Fatma Youssef</em:translator>
 		<em:homepageURL>http://alexandersalas.name/</em:homepageURL>
 		<em:icon64URL>chrome://lastfm/skin/icon64.png</em:icon64URL>
     
@@ -30,6 +30,14 @@
         <em:id>{33cb9019-c295-46dd-be21-8c4936574bee}</em:id>
         <em:minVersion>1.4</em:minVersion>
         <em:maxVersion>1.6a1pre</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    <!-- Thunderbird -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+        <em:minVersion>15.0</em:minVersion>
+        <em:maxVersion>38.0a1</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
