@@ -29,7 +29,7 @@ let myStatus = {
   LOG: function(aMsg) {
     if (debug)
       Services.console.logStringMessage(aMsg);
-  },  
+  },
   ERROR: function(aMsg) {
     Cu.reportError(aMsg)
   },
@@ -59,7 +59,7 @@ let myStatus = {
   },
   load: function() {
     this.loaded = true;
-    this._currentType = this._prefs.prefHasUserValue("type") ? 
+    this._currentType = this._prefs.prefHasUserValue("type") ?
                         this._prefs.getIntPref("type") : 0;
     this._currentStatus = this._prefs.prefHasUserValue("value") ?
                           this._prefs.getCharPref("value") : "";
@@ -87,7 +87,7 @@ let lastfm = {
   LOG: function(aMsg) {
     if (debug)
       Services.console.logStringMessage(aMsg);
-  },  
+  },
   ERROR: function(aMsg) {
     Cu.reportError(aMsg)
   },
@@ -117,14 +117,16 @@ let lastfm = {
       logger: {log: this.LOG.bind(this),
                debug: this.LOG.bind(this)}
     }
-    let url = "http://ajax.last.fm/user/" + this.userName + "/now"
+    let url = "https://ws.audioscrobbler.com/2.0/" +
+    "?method=user.getrecenttracks&user=" + this.userName +
+    "&api_key=c1797de6bf0b7e401b623118120cd9e1&limit=1&format=json"
     timer.initWithCallback((function () {
       try {
         let ajax = httpRequest(url, options);
         let artist = "";
         ajax.onload = function (aRequest) {
           let data = JSON.parse(aRequest.target.responseText);
-          if (data.nowplaying && data.track.is_music && !myStatus.lock) {
+          if (data.recenttracks.track[0]["@attr"].nowplaying) {
             if (typeof data.track.artist !== 'undefined')
               artist = " - " + data.track.artist.name;
             myStatus.setStatus("\u266b " + data.track.name + artist + " \u266a");
@@ -162,7 +164,7 @@ function shutdown(aData, aReason) {
     }
     timer.cancel();
   } catch (e){
-    
+
   }
 }
 
